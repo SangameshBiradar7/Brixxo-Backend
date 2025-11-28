@@ -82,8 +82,12 @@ app.use('/auth', authLimiter);
 app.use(limiter);
 
 // CORS configuration
+const corsOrigins = process.env.NODE_ENV === 'production'
+  ? [process.env.FRONTEND_URL].filter(Boolean)
+  : [process.env.FRONTEND_URL || "http://localhost:3000", "http://localhost:3000", "http://localhost:3001"];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  origin: corsOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
