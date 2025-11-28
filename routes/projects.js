@@ -8,6 +8,36 @@ const auth = require('../middleware/auth');
 
 const router = express.Router();
 
+// Get all projects (public endpoint for homepage and listings)
+router.get('/', async (req, res) => {
+  try {
+    console.log('🔄 Getting all projects for public access');
+
+    // Get projects that are either open homeowner requirements or published company/professional projects
+    const projects = await Project.find({
+      $or: [
+        { status: 'open' }, // Homeowner requirements
+        { company: { $exists: true }, isPublished: true }, // Company projects
+        { professional: { $exists: true }, isPublic: true } // Professional projects
+      ]
+    }, null, { strictPopulate: false })
+      .populate('company', 'name rating logo')
+      .populate('professional', 'name rating logo')
+      .populate('user', 'name')
+      .sort({ createdAt: -1 })
+      .limit(20); // Limit to prevent too many results
+
+    console.log(`✅ Found ${projects.length} projects`);
+    res.json(projects);
+  } catch (err) {
+    console.error('❌ Error fetching projects:', err);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: process.env.NODE_ENV === 'development' ? err.message : 'Failed to fetch projects'
+    });
+  }
+});
+
 // Get all open projects (for companies/professionals)
 router.get('/open', auth, async (req, res) => {
   if (req.user.role !== 'company_admin') return res.status(403).json({ message: 'Access denied' });
