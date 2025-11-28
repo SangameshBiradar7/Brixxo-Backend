@@ -44,15 +44,29 @@ This guide will help you deploy the Brixxo backend to Render.
 1. Push the `render.yaml` file to your repository
 2. Render will automatically detect and configure the service
 
-## Step 3: Configure Environment Variables
+## Step 3: Set up MongoDB Atlas
+
+### Create MongoDB Atlas Account:
+1. Go to [MongoDB Atlas](https://www.mongodb.com/atlas)
+2. Create a free account and cluster
+3. Create a database user with read/write permissions
+4. Whitelist IP addresses (add `0.0.0.0/0` for Render)
+5. Get your connection string from "Connect" → "Connect your application"
+
+### Your connection string should look like:
+```
+mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/dreambuild?retryWrites=true&w=majority
+```
+
+## Step 4: Configure Environment Variables
 
 In your Render service settings, add these environment variables:
 
 ### Required:
 ```
 NODE_ENV=production
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secure_jwt_secret
+MONGO_URI=mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/dreambuild?retryWrites=true&w=majority
+JWT_SECRET=your_secure_jwt_secret_here
 FRONTEND_URL=https://brixxo-frontend-zdqa.vercel.app
 ```
 

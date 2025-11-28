@@ -196,7 +196,16 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
 // MongoDB Connection with proper error handling
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/dreambuild');
+    const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/dreambuild';
+
+    if (!process.env.MONGO_URI && process.env.NODE_ENV === 'production') {
+      console.error('❌ MONGO_URI environment variable is required in production');
+      console.error('Please set MONGO_URI in your Render environment variables');
+      console.error('Example: mongodb+srv://username:password@cluster.mongodb.net/dreambuild');
+      return;
+    }
+
+    await mongoose.connect(mongoUri);
     console.log('✅ MongoDB connected successfully');
   } catch (err) {
     console.error('❌ MongoDB connection error:', err);
