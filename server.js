@@ -24,9 +24,13 @@ const app = express();
 const server = http.createServer(app);
 
 // Socket.IO configuration - Initialize once and reuse
+const socketOrigins = process.env.NODE_ENV === 'production'
+  ? [process.env.FRONTEND_URL].filter(Boolean)
+  : [process.env.FRONTEND_URL || "http://localhost:3000", "http://localhost:3000", "http://localhost:3001"];
+
 const io = socketIo(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: socketOrigins,
     methods: ["GET", "POST"],
     credentials: true
   },
