@@ -193,6 +193,128 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   lastModified: true
 }));
 
+// Seed sample data function
+const seedSampleData = async () => {
+  try {
+    console.log('🌱 Seeding sample data...');
+
+    // Check if data already exists
+    const existingProjects = await mongoose.connection.db.collection('projects').countDocuments();
+    if (existingProjects > 0) {
+      console.log('✅ Sample data already exists, skipping seed');
+      return;
+    }
+
+    // Sample projects
+    const sampleProjects = [
+      {
+        title: "Modern 3BHK Villa Interior Design",
+        description: "Complete interior design for a modern 3BHK villa including living room, bedrooms, kitchen, and bathrooms. Looking for contemporary design with warm colors.",
+        category: "interior-design",
+        budget: 800000,
+        location: "Bangalore, Karnataka",
+        status: "open",
+        buildingType: "Villa",
+        size: "2500 sq ft",
+        timeline: "3 months",
+        designStyle: "Modern Contemporary",
+        features: ["Living Room", "Bedrooms", "Kitchen", "Bathrooms"],
+        rating: 0,
+        views: 0,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        title: "Commercial Office Renovation",
+        description: "Renovation of 5000 sq ft commercial office space. Need modern workspace design with meeting rooms, open plan layout, and ergonomic furniture.",
+        category: "renovation",
+        budget: 2500000,
+        location: "Mumbai, Maharashtra",
+        status: "open",
+        buildingType: "Commercial",
+        size: "5000 sq ft",
+        timeline: "6 months",
+        designStyle: "Modern Office",
+        features: ["Open Plan", "Meeting Rooms", "Ergonomic Design"],
+        rating: 0,
+        views: 0,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        title: "Architectural Design for Bungalow",
+        description: "Complete architectural design for a luxury bungalow including floor plans, elevations, 3D renders, and construction drawings.",
+        category: "architecture",
+        budget: 150000,
+        location: "Pune, Maharashtra",
+        status: "open",
+        buildingType: "Bungalow",
+        size: "4000 sq ft",
+        timeline: "2 months",
+        designStyle: "Luxury Modern",
+        features: ["Floor Plans", "Elevations", "3D Renders", "Construction Drawings"],
+        rating: 0,
+        views: 0,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+
+    // Insert sample projects
+    await mongoose.connection.db.collection('projects').insertMany(sampleProjects);
+    console.log('✅ Sample projects added to database');
+
+    // Sample professionals
+    const sampleProfessionals = [
+      {
+        name: "Rajesh Kumar Interior Design",
+        email: "rajesh@example.com",
+        description: "Award-winning interior designer with 15+ years experience in luxury residential and commercial projects.",
+        services: ["Interior Design", "Space Planning", "Furniture Design"],
+        specialties: ["Modern Design", "Luxury Interiors", "Commercial Spaces"],
+        rating: 4.8,
+        reviewCount: 45,
+        isVerified: true,
+        location: {
+          city: "Bangalore",
+          state: "Karnataka",
+          zipCode: "560001"
+        },
+        tagline: "Transforming spaces into dreams",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: "Green Valley Constructions",
+        email: "info@greenvalley.com",
+        description: "Trusted construction company specializing in residential and commercial projects with quality craftsmanship.",
+        services: ["Construction", "Renovation", "Project Management"],
+        specialties: ["Villa Construction", "Office Renovation", "Quality Workmanship"],
+        rating: 4.6,
+        reviewCount: 32,
+        isVerified: true,
+        location: {
+          city: "Mumbai",
+          state: "Maharashtra",
+          zipCode: "400001"
+        },
+        tagline: "Building dreams with excellence",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+
+    // Insert sample professionals
+    await mongoose.connection.db.collection('professionals').insertMany(sampleProfessionals);
+    console.log('✅ Sample professionals added to database');
+
+    console.log('🎉 Sample data seeding completed!');
+
+  } catch (error) {
+    console.error('❌ Error seeding sample data:', error);
+  }
+};
+
 // MongoDB Connection with proper error handling
 const connectDB = async () => {
   try {
@@ -229,6 +351,10 @@ const connectDB = async () => {
       .catch(err => console.error("DB error:", err));
 
     console.log('✅ MongoDB connected successfully');
+
+    // Seed sample data after successful connection
+    await seedSampleData();
+
   } catch (err) {
     console.error('❌ MongoDB connection error:', err.message);
 
