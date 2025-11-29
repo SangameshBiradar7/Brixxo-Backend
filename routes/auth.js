@@ -8,7 +8,9 @@ const router = express.Router();
 
 // Register
 router.post('/register', async (req, res) => {
-  console.log('🔄 Registration attempt:', req.body);
+  console.log('🔄 Registration attempt - Route HIT!');
+  console.log('Request body:', req.body);
+  console.log('Headers:', req.headers);
   const { name, email, password, role } = req.body;
 
   try {
@@ -100,6 +102,16 @@ router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }))
 router.get('/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }), (req, res) => {
   const token = jwt.sign({ id: req.user._id, role: req.user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
   res.redirect(`http://localhost:3000?token=${token}`);
+});
+
+// Test route for debugging
+router.get('/test', (req, res) => {
+  console.log('✅ Test route hit successfully!');
+  res.json({
+    message: 'Auth routes working',
+    timestamp: new Date().toISOString(),
+    availableRoutes: ['POST /register', 'POST /login', 'GET /test']
+  });
 });
 
 module.exports = router;
