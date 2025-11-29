@@ -198,19 +198,50 @@ const connectDB = async () => {
   try {
     const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/dreambuild';
 
-    if (!process.env.MONGO_URI && process.env.NODE_ENV === 'production') {
-      console.error('❌ MONGO_URI environment variable is required in production');
-      console.error('Please set MONGO_URI in your Render environment variables');
-      console.error('Example: mongodb+srv://username:password@cluster.mongodb.net/dreambuild');
-      return;
+    // Check for placeholder/invalid connection strings
+    if (process.env.NODE_ENV === 'production') {
+      if (!process.env.MONGO_URI) {
+        console.error('❌ MONGO_URI environment variable is required in production');
+        console.error('Please set MONGO_URI in your Render environment variables');
+        console.error('Get your connection string from MongoDB Atlas → Connect → Connect your application');
+        return;
+      }
+
+      // Check for placeholder values
+      if (mongoUri.includes('username:password') || mongoUri.includes('xxxxx.mongodb.net')) {
+        console.error('❌ MONGO_URI contains placeholder values');
+        console.error('Please replace with your actual MongoDB Atlas connection string');
+        console.error('Example: mongodb+srv://yourusername:yourpassword@cluster0.abcde.mongodb.net/dreambuild');
+        console.error('Get your connection string from MongoDB Atlas dashboard');
+        return;
+      }
     }
 
-    await mongoose.connect(mongoUri);
+    console.log('🔄 Attempting to connect to MongoDB...');
+    await mongoose.connect(mongoUri, {
+      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+      socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+      maxPoolSize: 10, // Maintain up to 10 socket connections
+      serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+      socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+    });
+
     console.log('✅ MongoDB connected successfully');
   } catch (err) {
-    console.error('❌ MongoDB connection error:', err);
+    console.error('❌ MongoDB connection error:', err.message);
+
+    if (process.env.NODE_ENV === 'production') {
+      console.error('💡 Common issues:');
+      console.error('   - Wrong username/password in connection string');
+      console.error('   - IP whitelist not configured in MongoDB Atlas');
+      console.error('   - Database user permissions incorrect');
+      console.error('   - Network access restrictions');
+      console.error('🔗 Check: https://docs.mongodb.com/atlas/troubleshoot-connection/');
+    }
+
     // Don't exit process, let the app handle reconnection
-    setTimeout(connectDB, 5000); // Retry after 5 seconds
+    console.log('🔄 Retrying connection in 10 seconds...');
+    setTimeout(connectDB, 10000); // Retry after 10 seconds in production
   }
 };
 
