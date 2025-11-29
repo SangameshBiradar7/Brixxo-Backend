@@ -218,13 +218,34 @@ const connectDB = async () => {
     }
 
     console.log('🔄 Attempting to connect to MongoDB...');
-    await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
-      socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
-      maxPoolSize: 10, // Maintain up to 10 socket connections
-      serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
-      socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
-    });
+    console.log('Connection URI starts with:', mongoUri.substring(0, 20) + '...');
+
+    // Enhanced connection options for Render/MongoDB Atlas
+    const connectionOptions = {
+      serverSelectionTimeoutMS: 10000, // Increased timeout for cloud
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
+      minPoolSize: 2,
+      maxIdleTimeMS: 30000,
+      bufferCommands: false,
+      bufferMaxEntries: 0,
+      // SSL/TLS options for Render
+      ssl: true,
+      sslValidate: true,
+      tls: true,
+      tlsAllowInvalidCertificates: false,
+      tlsAllowInvalidHostnames: false,
+      tlsInsecure: false,
+      // Additional options for stability
+      retryWrites: true,
+      retryReads: true,
+      readPreference: 'primaryPreferred',
+      // Connection monitoring
+      heartbeatFrequencyMS: 10000,
+      serverMonitoringMode: 'poll'
+    };
+
+    await mongoose.connect(mongoUri, connectionOptions);
 
     console.log('✅ MongoDB connected successfully');
   } catch (err) {
