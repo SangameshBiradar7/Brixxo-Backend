@@ -220,32 +220,13 @@ const connectDB = async () => {
     console.log('🔄 Attempting to connect to MongoDB...');
     console.log('Connection URI starts with:', mongoUri.substring(0, 20) + '...');
 
-    // Enhanced connection options for Render/MongoDB Atlas
-    const connectionOptions = {
-      serverSelectionTimeoutMS: 10000, // Increased timeout for cloud
-      socketTimeoutMS: 45000,
-      maxPoolSize: 10,
-      minPoolSize: 2,
-      maxIdleTimeMS: 30000,
-      bufferCommands: false,
-      bufferMaxEntries: 0,
-      // SSL/TLS options for Render
-      ssl: true,
-      sslValidate: true,
-      tls: true,
-      tlsAllowInvalidCertificates: false,
-      tlsAllowInvalidHostnames: false,
-      tlsInsecure: false,
-      // Additional options for stability
-      retryWrites: true,
-      retryReads: true,
-      readPreference: 'primaryPreferred',
-      // Connection monitoring
-      heartbeatFrequencyMS: 10000,
-      serverMonitoringMode: 'poll'
-    };
+    // Temporary debugging code
+    console.log("URI =>", process.env.MONGO_URI);
 
-    await mongoose.connect(mongoUri, connectionOptions);
+    // Test connection with simple mongoose.connect
+    await mongoose.connect(process.env.MONGO_URI)
+      .then(() => console.log("DB connected"))
+      .catch(err => console.error("DB error:", err));
 
     console.log('✅ MongoDB connected successfully');
   } catch (err) {
