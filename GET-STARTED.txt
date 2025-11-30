@@ -1,0 +1,76 @@
+🏗️ BRIXXO - Get Started Guide
+====================================
+
+Hello! Welcome to BRIXXO. Let's get you up and running quickly.
+
+📋 WHAT YOU NEED TO DO:
+=======================
+
+1. Make sure you have these installed:
+   ✅ Node.js (from nodejs.org)
+   ✅ MongoDB (from mongodb.com)
+
+2. Double-click: quick-start.bat
+
+3. If you get dependency errors, double-click: fix-dependencies.bat
+
+4. Follow the on-screen instructions
+
+That's it! The application will be running at http://localhost:3000
+
+📖 IF YOU NEED HELP:
+===================
+
+If quick-start.bat doesn't work:
+
+A) Check what you have installed:
+   - Open Command Prompt
+   - Type: node --version
+   - Type: mongod --version
+
+B) If Node.js is missing:
+   - Go to: https://nodejs.org/
+   - Download the LTS version
+   - Install it
+
+C) If MongoDB is missing:
+   - Go to: https://www.mongodb.com/try/download/community
+   - Download for Windows
+   - Install it
+   - Start MongoDB service (see INSTALLATION-GUIDE.md)
+
+D) If you get dependency errors:
+   - Double-click: fix-dependencies.bat
+   - This fixes npm package conflicts
+
+E) If git clone fails:
+   - The repository URL needs to be replaced
+   - Ask for the actual repository URL
+   - Or use manual download from INSTALLATION-GUIDE.md
+
+F) Try quick-start.bat again
+
+📚 DETAILED HELP:
+================
+
+For complete step-by-step instructions, open:
+- INSTALLATION-GUIDE.md (detailed guide)
+- README.md (overview)
+
+🎯 WHAT YOU'LL GET:
+==================
+
+✅ Construction project marketplace
+✅ Search by budget, location, building type
+✅ Company profiles and ratings
+✅ Professional dashboard
+✅ Modern, responsive design
+
+🚀 READY TO START?
+==================
+
+Double-click: quick-start.bat
+
+Then visit: http://localhost:3000
+
+Happy building! 🏗️✨
