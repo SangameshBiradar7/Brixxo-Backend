@@ -433,7 +433,7 @@ app.post('/cache/clear', (req, res) => {
 });
 
 // Routes with caching where appropriate
-app.use('/auth', require('./routes/auth'));
+app.use('/api/auth', require('./routes/auth'));
 
 // Cache public API responses for 5 minutes
 app.use('/api/professionals', cacheMiddleware(300), require('./routes/professionals'));
