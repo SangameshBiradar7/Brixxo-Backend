@@ -26,7 +26,7 @@ const server = http.createServer(app);
 // Socket.IO configuration - Initialize once and reuse
 const socketOrigins = process.env.NODE_ENV === 'production'
   ? [process.env.FRONTEND_URL].filter(Boolean)
-  : [process.env.FRONTEND_URL || "http://localhost:3000", "http://localhost:3000","https://brixxo.in", "http://localhost:3001","https://www.brixxo.in","https://brixxo-frontend-zdqa-n6ecayzei-sangameshs-projects-fd9ee526.vercel.app"]
+  : [process.env.FRONTEND_URL || "http://localhost:3000", "http://localhost:3000","https://brixxo.in", "http://localhost:3001","https://www.brixxo.in","https://brixxo-frontend-zdqa-n6ecayzei-sangameshs-projects-fd9ee526.vercel.app","*"]
 
 const io = socketIo(server, {
   cors: {
