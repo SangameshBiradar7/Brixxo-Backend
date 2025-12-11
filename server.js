@@ -198,8 +198,15 @@ const seedSampleData = async () => {
   try {
     console.log('🌱 Seeding sample data...');
 
-    // Check if data already exists
-    const existingProjects = await mongoose.connection.db.collection('projects').countDocuments();
+    // Check if data already exists with error handling
+    let existingProjects = 0;
+    try {
+      existingProjects = await mongoose.connection.db.collection('projects').countDocuments();
+    } catch (countError) {
+      console.warn('⚠️ Could not check existing projects count:', countError.message);
+      // Continue with seeding if count fails
+    }
+
     if (existingProjects > 0) {
       console.log('✅ Sample data already exists, skipping seed');
       return;
@@ -345,15 +352,23 @@ const connectDB = async () => {
     // Temporary debugging code
     console.log("URI =>", process.env.MONGO_URI);
 
-    // Test connection with simple mongoose.connect
-    await mongoose.connect(process.env.MONGO_URI)
-      .then(() => console.log("DB connected"))
-      .catch(err => console.error("DB error:", err));
+    // Test connection with proper options
+    const options = {
+      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+      socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+      maxPoolSize: 10, // Maintain up to 10 socket connections
+    };
+
+    await mongoose.connect(process.env.MONGO_URI, options);
 
     console.log('✅ MongoDB connected successfully');
 
-    // Seed sample data after successful connection
-    await seedSampleData();
+    // Seed sample data after successful connection (don't fail if seeding fails)
+    try {
+      await seedSampleData();
+    } catch (seedError) {
+      console.warn('⚠️ Sample data seeding failed, but continuing:', seedError.message);
+    }
 
   } catch (err) {
     console.error('❌ MongoDB connection error:', err.message);
@@ -461,7 +476,7 @@ app.use('/api/quotes', require('./routes/quotes'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/professional-companies', require('./routes/professional-companies'));
 app.use('/api/professional-projects', require('./routes/professional-projects'));
-app.use('/auth/register', require('./routes/auth'));
+app.use('/api/auth/register', require('./routes/auth'));
 
 // Root endpoint
 app.get('/', cacheMiddleware(3600), (req, res) => { // Cache for 1 hour
@@ -625,8 +640,8 @@ app.use((req, res) => {
     availableRoutes: [
       'GET /health',
       'GET /metrics',
-      'POST /auth/login',
-      'POST /auth/register',
+      'POST /api/auth/login',
+      'POST /api/auth/register',
       'GET /api/projects',
       'GET /api/companies',
       'GET /api/professionals'
