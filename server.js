@@ -626,7 +626,7 @@ app.use((req, res) => {
       'GET /health',
       'GET /metrics',
       'POST /auth/login',
-      'POST /api/register',
+      'POST /auth/register',
       'GET /api/projects',
       'GET /api/companies',
       'GET /api/professionals'
