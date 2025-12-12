@@ -476,8 +476,7 @@ app.use('/api/quotes', require('./routes/quotes'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/professional-companies', require('./routes/professional-companies'));
 app.use('/api/professional-projects', require('./routes/professional-projects'));
-app.use('/api/auth/register', require('./routes/auth'));
-
+app.use('/api/auth', require('./routes/auth'));
 // Root endpoint
 app.get('/', cacheMiddleware(3600), (req, res) => { // Cache for 1 hour
   res.json({
