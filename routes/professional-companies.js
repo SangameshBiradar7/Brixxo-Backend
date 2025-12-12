@@ -112,9 +112,9 @@ router.post('/', auth, upload.single('logo'), async (req, res) => {
       whatsapp: whatsapp?.trim(),
       email: email?.trim(),
       address: address?.trim(),
-      services: services ? JSON.parse(services) : [],
-      specializations: specializations ? JSON.parse(specializations) : [],
-      certifications: certifications ? JSON.parse(certifications) : [],
+      services: Array.isArray(services) ? services : (services ? JSON.parse(services) : []),
+      specializations: Array.isArray(specializations) ? specializations : (specializations ? JSON.parse(specializations) : []),
+      certifications: Array.isArray(certifications) ? certifications : (certifications ? JSON.parse(certifications) : []),
       established: established?.trim(),
       employees: employees?.trim(),
       logo: req.file ? '/uploads/' + req.file.filename : null,
@@ -170,9 +170,9 @@ router.put('/:id', auth, upload.single('logo'), async (req, res) => {
     if (email !== undefined) company.email = email?.trim();
     if (address !== undefined) company.address = address?.trim();
 
-    if (services) company.services = JSON.parse(services);
-    if (specializations) company.specializations = JSON.parse(specializations);
-    if (certifications) company.certifications = JSON.parse(certifications);
+    if (services) company.services = Array.isArray(services) ? services : JSON.parse(services);
+    if (specializations) company.specializations = Array.isArray(specializations) ? specializations : JSON.parse(specializations);
+    if (certifications) company.certifications = Array.isArray(certifications) ? certifications : JSON.parse(certifications);
 
     if (established !== undefined) company.established = established?.trim();
     if (employees !== undefined) company.employees = employees?.trim();
